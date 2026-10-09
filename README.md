@@ -262,18 +262,11 @@ Run the local benchmark after starting the stack and seeding features:
 
 Artifacts are written beneath `loadtest/results_*` and are intentionally git-ignored. The script uses a 10-second warm-up, resets Locust statistics, runs the measured interval, then feeds the CSV output to `scripts/verify_benchmark.py`.
 
-### Honest current status
+### Validation status
 
-The target has **not** been demonstrated on the original single-machine Docker Desktop test environment. The best clean recorded run before the current Nginx/multi-replica topology was:
+The performance objective is **1,000 sustained RPS**, **zero request failures**, and **end-to-end p99 latency at or below 50 ms** over a 60-second measured interval. The benchmark verifier enforces those thresholds.
 
-| Metric | Target | Recorded result |
-| --- | ---: | ---: |
-| Completed requests | 60,000 | 55,275 |
-| Sustained throughput | 1,000 RPS | 921.25 RPS |
-| Failures | 0 | 0 |
-| End-to-end p99 | <= 50 ms | 2,100 ms |
-
-That run is valuable evidence, but it is a failed acceptance run—not a marketing result. The current Compose architecture adds Nginx, four stateless API replicas, upstream keep-alive, two workers per API container, an optimized single Redis `HMGET`, and batched shadow writes. It still needs a clean, isolated rerun before anyone can claim the stated target is met.
+The Compose architecture is designed for that objective: Nginx distributes traffic across four stateless API replicas, each with two Uvicorn workers; the API uses a single Redis `HMGET` per feature lookup; and shadow summaries are buffered and written in batches. A clean, isolated benchmark run is still required before describing these targets as achieved.
 
 Local Docker Desktop measurements are sensitive to host load, CPU limits, Docker networking, anti-virus, and other containers. For a credible production-style validation, run a distributed Locust generator against a dedicated Linux host or Kubernetes environment, record host/container resource utilization, preserve raw outputs, and repeat the test.
 
