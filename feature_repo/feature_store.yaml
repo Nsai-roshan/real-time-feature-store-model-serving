@@ -1,0 +1,7 @@
+project: realtime_feature_serving
+registry: data/registry.db
+provider: local
+online_store:
+  type: redis
+  connection_string: "${REDIS_URL}"
+entity_key_serialization_version: 2
