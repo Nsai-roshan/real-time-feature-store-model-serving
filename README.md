@@ -248,11 +248,11 @@ The test suite covers:
 - stale/missing feature behavior;
 - benchmark pass/fail evaluation rules.
 
-## Performance benchmark
+## Project benchmarks
 
-### Stated target
+### Acceptance criteria
 
-The intended acceptance target is a sustained **1,000 requests/second**, **zero request failures**, and **end-to-end p99 latency at or below 50 ms** over a 60-second measured interval. The verifier rejects a run that misses request volume, has failures, or exceeds the p99 budget.
+The project benchmark is a sustained **1,000 requests/second**, **zero request failures**, and **end-to-end p99 latency at or below 50 ms** over a 60-second measured interval. The verifier rejects a run that misses request volume, has failures, or exceeds the p99 budget.
 
 Run the local benchmark after starting the stack and seeding features:
 
@@ -262,9 +262,9 @@ Run the local benchmark after starting the stack and seeding features:
 
 Artifacts are written beneath `loadtest/results_*` and are intentionally git-ignored. The script uses a 10-second warm-up, resets Locust statistics, runs the measured interval, then feeds the CSV output to `scripts/verify_benchmark.py`.
 
-### Validation status
+### Benchmark execution
 
-The performance objective is **1,000 sustained RPS**, **zero request failures**, and **end-to-end p99 latency at or below 50 ms** over a 60-second measured interval. The benchmark verifier enforces those thresholds.
+The benchmark verifier enforces these thresholds.
 
 The Compose architecture is designed for that objective: Nginx distributes traffic across four stateless API replicas, each with two Uvicorn workers; the API uses a single Redis `HMGET` per feature lookup; and shadow summaries are buffered and written in batches. A clean, isolated benchmark run is still required before describing these targets as achieved.
 
